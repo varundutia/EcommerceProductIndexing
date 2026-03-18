@@ -35,7 +35,7 @@ public class Main {
         System.out.println("1 - 10,000 records");
         System.out.println("2 - 50,000 records");
         System.out.println("3 - 100,000 records");
-        System.out.println("4 - 800,000 records");
+        System.out.println("4 - 600,000 records");
         System.out.print("Enter dataset choice: ");
 
         int choice = scanner.nextInt();
