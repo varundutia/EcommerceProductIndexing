@@ -1,6 +1,11 @@
 package ecommerce.core;
 
+/**
+ * Stores the results of a single tree experiment run.
+ * Includes timing metrics, tree height, and final size.
+ */
 public class ExperimentResult {
+
     private final String treeType;
     private final String inputType;
     private final int datasetSize;
@@ -11,6 +16,19 @@ public class ExperimentResult {
     private final int heightAfterDelete;
     private final int finalSize;
 
+    /**
+     * Creates an immutable experiment result.
+     *
+     * @param treeType           type of tree (BST or AVL)
+     * @param inputType          input type (Random or Sorted)
+     * @param datasetSize        number of elements used
+     * @param insertionTimeNs    insertion time (nanoseconds)
+     * @param searchTimeNs       search time (nanoseconds)
+     * @param deleteTimeNs       deletion time (nanoseconds)
+     * @param heightBeforeDelete tree height before deletions
+     * @param heightAfterDelete  tree height after deletions
+     * @param finalSize          final number of elements
+     */
     public ExperimentResult(String treeType, String inputType, int datasetSize,
                             long insertionTimeNs, long searchTimeNs, long deleteTimeNs,
                             int heightBeforeDelete, int heightAfterDelete, int finalSize) {
@@ -25,42 +43,36 @@ public class ExperimentResult {
         this.finalSize = finalSize;
     }
 
-    public String getTreeType() {
-        return treeType;
-    }
+    /** @return tree type */
+    public String getTreeType() { return treeType; }
 
-    public String getInputType() {
-        return inputType;
-    }
+    /** @return input type */
+    public String getInputType() { return inputType; }
 
-    public int getDatasetSize() {
-        return datasetSize;
-    }
+    /** @return dataset size */
+    public int getDatasetSize() { return datasetSize; }
 
-    public long getInsertionTimeNs() {
-        return insertionTimeNs;
-    }
+    /** @return insertion time (ns) */
+    public long getInsertionTimeNs() { return insertionTimeNs; }
 
-    public long getSearchTimeNs() {
-        return searchTimeNs;
-    }
+    /** @return search time (ns) */
+    public long getSearchTimeNs() { return searchTimeNs; }
 
-    public long getDeleteTimeNs() {
-        return deleteTimeNs;
-    }
+    /** @return delete time (ns) */
+    public long getDeleteTimeNs() { return deleteTimeNs; }
 
-    public int getHeightBeforeDelete() {
-        return heightBeforeDelete;
-    }
+    /** @return height before deletion */
+    public int getHeightBeforeDelete() { return heightBeforeDelete; }
 
-    public int getHeightAfterDelete() {
-        return heightAfterDelete;
-    }
+    /** @return height after deletion */
+    public int getHeightAfterDelete() { return heightAfterDelete; }
 
-    public int getFinalSize() {
-        return finalSize;
-    }
+    /** @return final size after operations */
+    public int getFinalSize() { return finalSize; }
 
+    /**
+     * Returns a compact string representation.
+     */
     @Override
     public String toString() {
         return "ExperimentResult{" +
@@ -76,6 +88,9 @@ public class ExperimentResult {
                 '}';
     }
 
+    /**
+     * Returns a formatted, readable output for console display.
+     */
     public String toPrettyString() {
         return "\n==============================\n" +
                 "Tree Type         : " + treeType + "\n" +

@@ -4,12 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Utility class for averaging benchmark results across multiple runs.
+ */
 public class AverageRunner {
 
     private AverageRunner() {
         // utility class
     }
 
+    /**
+     * Computes the average values from a list of experiment results.
+     *
+     * @param results list of results to average
+     * @return averaged experiment result
+     */
     public static ExperimentResult averageResults(List<ExperimentResult> results) {
         if (results == null || results.isEmpty()) {
             throw new IllegalArgumentException("Results list cannot be null or empty.");
@@ -50,6 +59,13 @@ public class AverageRunner {
         );
     }
 
+    /**
+     * Runs the same experiment multiple times and returns the average result.
+     *
+     * @param runs number of runs
+     * @param experimentSupplier supplier that executes the experiment
+     * @return averaged experiment result
+     */
     public static ExperimentResult runAverage(int runs, Supplier<ExperimentResult> experimentSupplier) {
         if (runs <= 0) {
             throw new IllegalArgumentException("Number of runs must be greater than 0.");

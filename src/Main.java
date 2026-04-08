@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.Scanner;
+
 import ecommerce.core.AVLExperimentRunner;
 import ecommerce.core.AverageRunner;
 import ecommerce.core.BSTExperimentRunner;
@@ -6,11 +9,45 @@ import ecommerce.core.ExperimentResult;
 import ecommerce.model.Product;
 import ecommerce.util.CSVReader;
 
-import java.util.List;
-import java.util.Scanner;
-
+/**
+ * Entry point for the Ecommerce BST vs AVL Tree benchmarking application.
+ *
+ * <p>This program loads product data from a CSV file and compares the practical
+ * performance of a Binary Search Tree (BST) and an AVL Tree under different
+ * experimental conditions. The user can choose the dataset size, input order,
+ * and execution mode from the console.</p>
+ *
+ * <p>The benchmark measures:
+ * <ul>
+ *   <li>Insertion time</li>
+ *   <li>Search time</li>
+ *   <li>Deletion time</li>
+ *   <li>Tree height before and after deletion</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Supported experiment modes:
+ * <ul>
+ *   <li>Single run</li>
+ *   <li>Averaged run over 5 iterations</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Supported input types:
+ * <ul>
+ *   <li>Random input</li>
+ *   <li>Sorted input</li>
+ *   <li>Both</li>
+ * </ul>
+ * </p>
+ */
 public class Main {
 
+    /**
+     * Runs the ecommerce benchmarking application.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
 
         final String RESET = "\u001B[0m";
@@ -35,12 +72,11 @@ public class Main {
         System.out.println("1 - 10,000 records");
         System.out.println("2 - 50,000 records");
         System.out.println("3 - 100,000 records");
-        System.out.println("4 - 600,000 records");
         System.out.print("Enter dataset choice: ");
 
         int choice = scanner.nextInt();
 
-        String filePath = "src/data/amazon_products_600k.csv";
+        String filePath = "src/data/amazon_100k.csv";
         int datasetSize;
 
         switch (choice) {
@@ -52,9 +88,6 @@ public class Main {
                 break;
             case 3:
                 datasetSize = 100_000;
-                break;
-            case 4:
-                datasetSize = 600_000;
                 break;
             default:
                 System.out.println(RED + "Invalid choice. Defaulting to 10,000." + RESET);
@@ -88,7 +121,9 @@ public class Main {
             return;
         }
 
-        System.out.println("\nTotal products loaded: " + baseProducts.size());
+        System.out.println("\nDataset file used: " + filePath);
+        System.out.println("Dataset limit applied: " + datasetSize);
+        System.out.println("Total products loaded: " + baseProducts.size());
         System.out.println("========================================================");
 
         // ===== Run Experiments =====

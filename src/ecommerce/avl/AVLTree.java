@@ -6,51 +6,74 @@ import java.util.List;
 import ecommerce.adt.Tree;
 import ecommerce.model.Product;
 
+/**
+ * Implementation of an AVL Tree for storing Product objects.
+ * <p>
+ * The tree is ordered by product ASIN and maintains balance after
+ * insertions and deletions using rotations.
+ * <p>
+ * Unlike a standard BST, AVL Trees guarantee O(log n) height,
+ * which improves worst-case search, insertion, and deletion performance.
+ */
 public class AVLTree implements Tree<Product> {
+
     private AVLNode root;
     private int size;
 
+    /** Constructs an empty AVL Tree. */
     public AVLTree() {
         this.root = null;
         this.size = 0;
     }
 
+    /** @return root node of the tree */
     public AVLNode getRoot() {
         return root;
     }
 
+    /** @return number of elements in the tree */
     @Override
     public int size() {
         return size;
     }
 
+    /** @return true if tree is empty */
     @Override
     public boolean isEmpty() {
         return root == null;
     }
 
+    /** Compares two products by ASIN. */
     private int compareByAsin(Product p1, Product p2) {
         return p1.getAsin().compareTo(p2.getAsin());
     }
 
+    /** Compares two ASIN strings. */
     private int compareByAsin(String asin1, String asin2) {
         return asin1.compareTo(asin2);
     }
 
+    /** Returns the height of a node, or 0 if null. */
     private int height(AVLNode node) {
         return node == null ? 0 : node.getHeight();
     }
 
+    /**
+     * Computes the balance factor of a node.
+     * Positive means left-heavy, negative means right-heavy.
+     */
     private int getBalance(AVLNode node) {
         return node == null ? 0 : height(node.getLeft()) - height(node.getRight());
     }
 
+    /** Updates the stored height of a node. */
     private void updateHeight(AVLNode node) {
         if (node != null) {
             node.setHeight(1 + Math.max(height(node.getLeft()), height(node.getRight())));
         }
     }
 
+    /** Performs a right rotation. */
     private AVLNode rightRotate(AVLNode y) {
         AVLNode x = y.getLeft();
         AVLNode t2 = x.getRight();
@@ -64,6 +87,7 @@ public class AVLTree implements Tree<Product> {
         return x;
     }
 
+    /** Performs a left rotation. */
     private AVLNode leftRotate(AVLNode x) {
         AVLNode y = x.getRight();
         AVLNode t2 = y.getLeft();
@@ -77,6 +101,10 @@ public class AVLTree implements Tree<Product> {
         return y;
     }
 
+    /**
+     * Inserts a product into the AVL Tree.
+     * Duplicate ASINs replace the existing product.
+     */
     @Override
     public void insert(Product product) {
         int oldSize = size;
@@ -86,6 +114,10 @@ public class AVLTree implements Tree<Product> {
         }
     }
 
+    /**
+     * Recursive AVL insertion with rebalancing.
+     * Handles LL, RR, LR, and RL imbalance cases.
+     */
     private AVLNode insert(AVLNode node, Product product) {
         if (node == null) {
             size++;
@@ -127,12 +159,19 @@ public class AVLTree implements Tree<Product> {
         return node;
     }
 
+    /**
+     * Searches for a product by ASIN.
+     *
+     * @param asin product identifier
+     * @return matching product or null if not found
+     */
     @Override
     public Product search(String asin) {
         AVLNode node = searchNode(root, asin);
         return node == null ? null : node.getProduct();
     }
 
+    /** Internal search returning node reference. */
     private AVLNode searchNode(AVLNode node, String asin) {
         AVLNode current = node;
 
@@ -151,6 +190,11 @@ public class AVLTree implements Tree<Product> {
         return null;
     }
 
+    /**
+     * Deletes a product by ASIN and rebalances the tree.
+     *
+     * @return true if deletion was successful
+     */
     @Override
     public boolean delete(String asin) {
         if (search(asin) == null) {
@@ -161,6 +205,9 @@ public class AVLTree implements Tree<Product> {
         return true;
     }
 
+    /**
+     * Recursive AVL deletion with rebalancing.
+     */
     private AVLNode delete(AVLNode node, String asin) {
         if (node == null) {
             return null;
@@ -216,11 +263,9 @@ public class AVLTree implements Tree<Product> {
         return node;
     }
 
+    /** @return minimum product (smallest ASIN) */
     public Product minimum() {
-        if (root == null) {
-            return null;
-        }
-        return minimumNode(root).getProduct();
+        return root == null ? null : minimumNode(root).getProduct();
     }
 
     private AVLNode minimumNode(AVLNode node) {
@@ -231,11 +276,9 @@ public class AVLTree implements Tree<Product> {
         return current;
     }
 
+    /** @return maximum product (largest ASIN) */
     public Product maximum() {
-        if (root == null) {
-            return null;
-        }
-        return maximumNode(root).getProduct();
+        return root == null ? null : maximumNode(root).getProduct();
     }
 
     private AVLNode maximumNode(AVLNode node) {
@@ -246,11 +289,18 @@ public class AVLTree implements Tree<Product> {
         return current;
     }
 
+    /**
+     * Returns the height of the AVL Tree.
+     * Empty tree has height -1.
+     */
     @Override
     public int height() {
         return root == null ? -1 : root.getHeight() - 1;
     }
 
+    /**
+     * Performs inorder traversal (sorted output).
+     */
     @Override
     public List<Product> inorderTraversal() {
         List<Product> products = new ArrayList<>();
@@ -266,6 +316,9 @@ public class AVLTree implements Tree<Product> {
         }
     }
 
+    /**
+     * Prints first N elements in sorted order.
+     */
     public void printInorderLimited(int limit) {
         List<Product> products = inorderTraversal();
         int count = Math.min(limit, products.size());

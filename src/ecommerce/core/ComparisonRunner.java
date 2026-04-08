@@ -7,8 +7,18 @@ import ecommerce.avl.AVLTree;
 import ecommerce.bst.BinarySearchTree;
 import ecommerce.model.Product;
 
+/**
+ * Executes and compares BST and AVL Tree experiments.
+ */
 public class ComparisonRunner {
 
+    /**
+     * Runs a full experiment on a Binary Search Tree.
+     *
+     * @param products  dataset of products
+     * @param inputType input type (Random or Sorted)
+     * @return experiment result for BST
+     */
     public static ExperimentResult runBSTExperiment(List<Product> products, String inputType) {
         BinarySearchTree bst = new BinarySearchTree();
 
@@ -47,6 +57,13 @@ public class ComparisonRunner {
         );
     }
 
+    /**
+     * Runs a full experiment on an AVL Tree.
+     *
+     * @param products  dataset of products
+     * @param inputType input type (Random or Sorted)
+     * @return experiment result for AVL
+     */
     public static ExperimentResult runAVLExperiment(List<Product> products, String inputType) {
         AVLTree avl = new AVLTree();
 
@@ -85,6 +102,9 @@ public class ComparisonRunner {
         );
     }
 
+    /**
+     * Executes search operations on BST.
+     */
     private static void runSearchesOnBST(BinarySearchTree bst, List<Product> products) {
         int limit = Math.min(1000, products.size());
 
@@ -97,6 +117,9 @@ public class ComparisonRunner {
         }
     }
 
+    /**
+     * Executes search operations on AVL Tree.
+     */
     private static void runSearchesOnAVL(AVLTree avl, List<Product> products) {
         int limit = Math.min(1000, products.size());
 
@@ -109,15 +132,23 @@ public class ComparisonRunner {
         }
     }
 
+    /**
+     * Selects ASIN keys for deletion testing.
+     */
     private static List<String> chooseDeleteKeys(List<Product> products, int maxDeletes) {
         List<String> keys = new ArrayList<>();
         int step = Math.max(1, products.size() / Math.max(1, maxDeletes));
+
         for (int i = 0; i < products.size() && keys.size() < maxDeletes; i += step) {
             keys.add(products.get(i).getAsin());
         }
+
         return keys;
     }
 
+    /**
+     * Prints formatted comparison between BST and AVL results.
+     */
     public static void printComparison(ExperimentResult bstResult, ExperimentResult avlResult) {
         System.out.println(bstResult.toPrettyString());
         System.out.println(avlResult.toPrettyString());
@@ -130,21 +161,21 @@ public class ComparisonRunner {
         System.out.println("========================================");
     }
 
+    /**
+     * Compares execution times.
+     */
     private static String betterTime(long bstTime, long avlTime, String bstLabel, String avlLabel) {
-        if (bstTime < avlTime) {
-            return bstLabel + " faster";
-        } else if (avlTime < bstTime) {
-            return avlLabel + " faster";
-        }
+        if (bstTime < avlTime) return bstLabel + " faster";
+        if (avlTime < bstTime) return avlLabel + " faster";
         return "Equal";
     }
 
+    /**
+     * Compares tree heights.
+     */
     private static String betterHeight(int bstHeight, int avlHeight, String bstLabel, String avlLabel) {
-        if (bstHeight < avlHeight) {
-            return bstLabel + " shorter";
-        } else if (avlHeight < bstHeight) {
-            return avlLabel + " shorter";
-        }
+        if (bstHeight < avlHeight) return bstLabel + " shorter";
+        if (avlHeight < bstHeight) return avlLabel + " shorter";
         return "Equal";
     }
 }

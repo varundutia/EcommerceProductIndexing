@@ -1,42 +1,65 @@
 package ecommerce.bst;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import ecommerce.adt.Tree;
 import ecommerce.model.Product;
 
+/**
+ * Implementation of a Binary Search Tree (BST) for storing Product objects.
+ * <p>
+ * The tree is ordered by product ASIN, ensuring:
+ * - Left subtree contains smaller ASINs
+ * - Right subtree contains larger ASINs
+ * <p>
+ * Average time complexity: O(log n)
+ * Worst-case (sorted input): O(n)
+ */
 public class BinarySearchTree implements Tree<Product> {
+
     private BSTNode root;
     private int size;
 
+    /** Constructs an empty BST. */
     public BinarySearchTree() {
         this.root = null;
         this.size = 0;
     }
 
+    /** @return root node of the tree */
     public BSTNode getRoot() {
         return root;
     }
 
+    /** @return number of elements in the tree */
     @Override
     public int size() {
         return size;
     }
 
+    /** @return true if tree is empty */
     @Override
     public boolean isEmpty() {
         return root == null;
     }
 
+    /** Compares two products by ASIN. */
     private int compareByAsin(Product p1, Product p2) {
         return p1.getAsin().compareTo(p2.getAsin());
     }
 
+    /** Compares two ASIN strings. */
     private int compareByAsin(String asin1, String asin2) {
         return asin1.compareTo(asin2);
     }
 
+    /**
+     * Inserts a product into the BST.
+     * If a product with the same ASIN exists, it is replaced.
+     */
     @Override
     public void insert(Product product) {
         BSTNode newNode = new BSTNode(product);
@@ -75,12 +98,19 @@ public class BinarySearchTree implements Tree<Product> {
         size++;
     }
 
+    /**
+     * Searches for a product by ASIN.
+     *
+     * @param asin product identifier
+     * @return matching product or null if not found
+     */
     @Override
     public Product search(String asin) {
         BSTNode node = searchNode(asin);
         return node == null ? null : node.getProduct();
     }
 
+    /** Internal search returning node reference. */
     private BSTNode searchNode(String asin) {
         BSTNode current = root;
 
@@ -99,10 +129,14 @@ public class BinarySearchTree implements Tree<Product> {
         return null;
     }
 
+    /**
+     * Deletes a product by ASIN.
+     *
+     * @return true if deletion was successful
+     */
     @Override
     public boolean delete(String asin) {
         BSTNode nodeToDelete = searchNode(asin);
-
         if (nodeToDelete == null) {
             return false;
         }
@@ -112,6 +146,7 @@ public class BinarySearchTree implements Tree<Product> {
         return true;
     }
 
+    /** Handles BST deletion cases. */
     private void deleteNode(BSTNode node) {
         if (node.getLeft() == null && node.getRight() == null) {
             transplant(node, null);
@@ -138,6 +173,7 @@ public class BinarySearchTree implements Tree<Product> {
         }
     }
 
+    /** Replaces subtree rooted at u with subtree rooted at v. */
     private void transplant(BSTNode u, BSTNode v) {
         if (u.getParent() == null) {
             root = v;
@@ -152,52 +188,68 @@ public class BinarySearchTree implements Tree<Product> {
         }
     }
 
+    /** @return minimum product (smallest ASIN) */
     public Product minimum() {
-        if (root == null) {
-            return null;
-        }
-        return minimumNode(root).getProduct();
+        return root == null ? null : minimumNode(root).getProduct();
     }
 
     private BSTNode minimumNode(BSTNode node) {
-        BSTNode current = node;
-        while (current.getLeft() != null) {
-            current = current.getLeft();
+        while (node.getLeft() != null) {
+            node = node.getLeft();
         }
-        return current;
+        return node;
     }
 
+    /** @return maximum product (largest ASIN) */
     public Product maximum() {
-        if (root == null) {
-            return null;
-        }
-        return maximumNode(root).getProduct();
+        return root == null ? null : maximumNode(root).getProduct();
     }
 
     private BSTNode maximumNode(BSTNode node) {
-        BSTNode current = node;
-        while (current.getRight() != null) {
-            current = current.getRight();
+        while (node.getRight() != null) {
+            node = node.getRight();
         }
-        return current;
+        return node;
     }
 
+    /**
+     * Computes tree height iteratively using level-order traversal.
+     * Empty tree has height -1.
+     */
     @Override
     public int height() {
-        return height(root);
-    }
-
-    private int height(BSTNode node) {
-        if (node == null) {
+        if (root == null) {
             return -1;
         }
 
-        int leftHeight = height(node.getLeft());
-        int rightHeight = height(node.getRight());
+        Queue<BSTNode> queue = new LinkedList<>();
+        queue.add(root);
 
-        return 1 + Math.max(leftHeight, rightHeight);
+        int height = -1;
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            height++;
+
+            for (int i = 0; i < levelSize; i++) {
+                BSTNode current = queue.poll();
+
+                if (current.getLeft() != null) {
+                    queue.add(current.getLeft());
+                }
+
+                if (current.getRight() != null) {
+                    queue.add(current.getRight());
+                }
+            }
+        }
+
+        return height;
     }
 
+    /**
+     * Performs inorder traversal (sorted output).
+     */
     @Override
     public List<Product> inorderTraversal() {
         List<Product> products = new ArrayList<>();
@@ -213,6 +265,9 @@ public class BinarySearchTree implements Tree<Product> {
         }
     }
 
+    /**
+     * Prints first N elements in sorted order.
+     */
     public void printInorderLimited(int limit) {
         List<Product> products = inorderTraversal();
         int count = Math.min(limit, products.size());
